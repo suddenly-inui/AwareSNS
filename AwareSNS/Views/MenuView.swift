@@ -1,18 +1,36 @@
-//
-//  MenuView.swift
-//  AwareSNS
-//
-//  Created by Yuki Inui on 2023/10/02.
-//
-
 import SwiftUI
 
 struct MenuView: View {
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack(alignment: .leading) {
+            Image("animal_kuma")
+                .resizable()
+                .overlay(
+                    Circle().stroke(Color.gray, lineWidth: 1))
+                .frame(width: 60, height: 60)
+                .clipShape(Circle())
+            Text("SwiftUIへの道")
+                .font(.largeTitle)
+            Text("@road2swiftui")
+                .font(.caption)
+            Divider()
+            ScrollView (.vertical, showsIndicators: true) {
+                HStack {
+                    Image(systemName: "person")
+                    Text("Profile")
+                }
+                HStack {
+                    Image(systemName: "list.dash")
+                    Text("Lists")
+                }
+                HStack {
+                    Image(systemName: "text.bubble")
+                    Text("Topics")
+                }
+            }
+            Divider()
+            Text("Settings and privacy")
+        }
+        .padding(.horizontal, 20)
     }
-}
-
-#Preview {
-    MenuView()
 }

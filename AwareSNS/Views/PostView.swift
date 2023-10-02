@@ -1,18 +1,34 @@
-//
-//  PostView.swift
-//  AwareSNS
-//
-//  Created by Yuki Inui on 2023/10/02.
-//
-
 import SwiftUI
 
 struct PostView: View {
+    var post: Post
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack(alignment: .leading) {
+            VStack(alignment: .leading) {
+                VStack(alignment: .leading){
+                    HStack {
+                        Text(post.user_name)
+                            .fontWeight(.bold)
+                        Text(post.timestamp)
+                            .foregroundColor(.gray)
+                    }
+                    Text("@\(post.user_id)")
+                        .foregroundColor(.gray)
+                }
+                .padding(.bottom, 10)
+                
+                Text(post.content)
+                    .lineLimit(nil)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .multilineTextAlignment(.leading)
+                
+            }
+            .padding()
+            .padding(.leading, 20)
+            Divider()
+        }
+        .buttonStyle(PlainButtonStyle())
+        .foregroundColor(Color.primary)
     }
-}
-
-#Preview {
-    PostView()
 }
