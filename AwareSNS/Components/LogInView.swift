@@ -25,6 +25,7 @@ struct LogInView: View {
                 .onChange(of: user_id){
                     check_input()
                 }
+            Divider()
             
             SecureField("パスワードを入力してください", text: $password)
                 .autocapitalization(.none)
@@ -33,6 +34,7 @@ struct LogInView: View {
                 .onChange(of: password){
                     check_input()
                 }
+            Divider()
             
             Button(action: {
                 logIn(id: user_id, pass: password)

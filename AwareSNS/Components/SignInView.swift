@@ -33,6 +33,7 @@ struct SignInView: View {
                 .onChange(of: user_id){
                     check_input()
                 }
+            Divider()
             
             TextField("ユーザーネームを入力してください", text: $user_name)
                 .autocapitalization(.none)
@@ -41,6 +42,7 @@ struct SignInView: View {
                 .onChange(of: user_name){
                     check_input()
                 }
+            Divider()
             
             SecureField("パスワードを入力してください", text: $password)
                 .autocapitalization(.none)
@@ -49,6 +51,7 @@ struct SignInView: View {
                 .onChange(of: password){
                     check_input()
                 }
+            Divider()
             
             if showAlert {
                 Text(error_text)
