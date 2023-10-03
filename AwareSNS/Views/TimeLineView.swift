@@ -32,7 +32,7 @@ struct TimeLineView: View {
         apiService.fetchPosts() { result in
             switch result {
             case .success(let data):
-                print("fetch posts")
+                print("fetched posts")
                 posts = data
             case .failure(let error):
                 print("fetchPosts: \(error)")

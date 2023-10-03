@@ -4,6 +4,12 @@ struct NewPostView: View {
     @Binding var active: Bool
     @State var showAlert: Bool = false
     @State var post_content: String = ""
+    @State var buttonDisabled: Bool = true
+    
+    //emotion
+    @Binding var emotion: String
+    
+    @FocusState var isFocused: Bool
     
     let apiService = APIService()
     let defaults = UserDefaults.standard
@@ -16,43 +22,62 @@ struct NewPostView: View {
                 }){
                     Text("キャンセル")
                 }
+                
                 Spacer()
+                
                 Button(action: {
-                    if !post_content.isEmpty || post_content.count > 120{
-                        send_post(user_id: defaults.string(forKey: "user_id")!, content: post_content.trimmingCharacters(in: .whitespacesAndNewlines))
+                    if !post_content.isEmpty || post_content.count <= 120{
+                        send_post(user_id: defaults.string(forKey: "user_id")!, content: post_content.trimmingCharacters(in: .whitespacesAndNewlines), emotion: emotion)
                     } else {
                         showAlert = true
                     }
                 }){
                     Text("ポストする")
                 }
-                .alert(isPresented: $showAlert) {
-                    Alert(
-                        title: Text("エラー"),
-                        message: Text("ポストの内容を120字以内で入力してください"),
-                        dismissButton: .default(Text("OK"))
-                    )
-                }
+                .disabled(buttonDisabled)
             }
             .padding()
             
             TextField("いまなにしてる？", text: $post_content, axis: .vertical)
                 .lineLimit(15...15)
                 .padding()
+                .focused($isFocused)
+                .onChange(of: post_content){
+                    if post_content.isEmpty || post_content.count > 120{
+                        buttonDisabled = true
+                    } else {
+                        buttonDisabled = false
+                    }
+                }
             
             Spacer()
         }
-        
+        .onAppear{
+            isFocused = true
+            getEmotion(user_id: defaults.string(forKey: "user_id")!)
+        }
     }
     
-    func send_post(user_id: String, content: String){
-        apiService.sendPost(user_id: user_id, content: content) { result in
+    func send_post(user_id: String, content: String, emotion: String){
+        apiService.sendPost(user_id: user_id, content: content, emotion: emotion) { result in
             switch result {
             case .success(let data):
-                print(data)
+                print("send_post: \(data)")
                 active = false
             case .failure(let error):
-                print("APIエラー: \(error)")
+                print("sendPost: \(error)")
+            }
+        }
+    }
+    
+    func getEmotion(user_id: String){
+        apiService.getEmotion(user_id:user_id) { result in
+            switch result {
+            case .success(let data):
+                print("got Emotion: \(data.emotion)")
+                emotion = data.emotion
+            case .failure(let error):
+                print("fetchPosts: \(error)")
             }
         }
     }

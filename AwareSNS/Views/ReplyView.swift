@@ -1,27 +1,24 @@
 import SwiftUI
 
-struct PostView: View {
-    var post: Post
-    let apiService = APIService()
+struct ReplyView: View {
+    var reply: Reply
     
     var body: some View {
         VStack(alignment: .leading) {
             VStack(alignment: .leading) {
                 VStack(alignment: .leading){
                     HStack {
-                        Text(post.user_name)
+                        Text(reply.user_name)
                             .fontWeight(.bold)
-                        Text(post.timestamp)
-                            .foregroundColor(.gray)
-                        Text("\(post.emotion)")
+                        Text(reply.timestamp)
                             .foregroundColor(.gray)
                     }
-                    Text("@\(post.user_id)")
+                    Text("@\(reply.user_id)")
                         .foregroundColor(.gray)
                 }
                 .padding(.bottom, 10)
                 
-                Text(post.content)
+                Text(reply.content)
                     .lineLimit(nil)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .multilineTextAlignment(.leading)
@@ -33,8 +30,5 @@ struct PostView: View {
         }
         .buttonStyle(PlainButtonStyle())
         .foregroundColor(Color.primary)
-        .onAppear{
-            
-        }
     }
 }

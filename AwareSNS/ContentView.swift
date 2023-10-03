@@ -8,8 +8,10 @@ struct ContentView: View {
     @State private var isNewPostModalActive: Bool = false
     @State private var isUserRegisterModalActive: Bool = false
     @State private var reload_timeline: Bool = false
+    @State private var emotion: String = "0"
     
     let defaults = UserDefaults.standard
+    let apiService = APIService()
     
     var body: some View {
         NavigationView {
@@ -38,7 +40,7 @@ struct ContentView: View {
                     }
                     .tag(3)
             }
-            .navigationBarTitle("Aware SNS")
+            .navigationBarTitle("Aware SNS \(emotion)")
             .navigationBarTitleDisplayMode(.inline)
             .overlay(
                 Button(action: {
@@ -57,16 +59,58 @@ struct ContentView: View {
                     .padding(30)
                     .padding(.bottom, 40)
                     .fullScreenCover(isPresented: $isNewPostModalActive, content: {
-                            NewPostView(active: $isNewPostModalActive)
+                        NewPostView(active: $isNewPostModalActive, emotion: $emotion)
                     })
                 , alignment: .bottomTrailing
             )
         }
         .fullScreenCover(isPresented: $isUserRegisterModalActive, content: {
-            UserRegisterView(active: $isUserRegisterModalActive)
+            RegisterUserView(active: $isUserRegisterModalActive)
         })
         .onAppear{
-            isUserRegisterModalActive = (defaults.object(forKey: "user_id") == nil)
+            isUserRegistered { isSuccess in
+                if isSuccess {
+                    if defaults.object(forKey: "user_id") != nil {
+                        isUserRegisterModalActive = false
+                        getEmotion(user_id: defaults.string(forKey: "user_id")!)
+                    } else {
+                        isUserRegisterModalActive = true
+                    }
+                } else {
+                    isUserRegisterModalActive = true
+                }
+            }
+            
         }
     }
+    
+    func isUserRegistered(completion: @escaping (Bool) -> Void) {
+        if defaults.object(forKey: "user_id") != nil {
+            apiService.isUserRegistered(user_id: defaults.string(forKey: "user_id")!) { result in
+                switch result {
+                case .success(let data):
+                    print("isUserRegistered: \(data)")
+                    completion(data.success) // APIの結果をコールバックで返す
+                case .failure(let error):
+                    print("isUserRegistered: \(error)")
+                    completion(false) // エラーが発生した場合もコールバックで結果を返す
+                }
+            }
+        } else {
+            completion(false)
+        }
+    }
+    
+    func getEmotion(user_id: String){
+        apiService.getEmotion(user_id:user_id) { result in
+            switch result {
+            case .success(let data):
+                print("got Emotion: \(data.emotion)")
+                emotion = data.emotion
+            case .failure(let error):
+                print("fetchPosts: \(error)")
+            }
+        }
+    }
+    
 }

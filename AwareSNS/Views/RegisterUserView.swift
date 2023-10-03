@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct UserRegisterView: View {
+struct RegisterUserView: View {
     @State private var user_id: String = ""
     @State private var user_name: String = ""
     @Binding var active: Bool
@@ -65,7 +65,7 @@ struct UserRegisterView: View {
         apiService.registerUser(user_id: user_id, user_name: user_name) { result in
             switch result {
             case .success(let data):
-                print(data)
+                print("registerUser: \(data)")
                 defaults.set(user_id, forKey: "user_id")
                 active = false
             case .failure(let error):
