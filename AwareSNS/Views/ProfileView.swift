@@ -12,11 +12,28 @@ struct ProfileView: View {
     let apiService = APIService()
     
     @State var user: User = User(user_id: "", user_name: "")
+    @State var logOut: Bool = false
+    
+    @Binding var tab: Int
     
     var body: some View {
         VStack{
             Text(user.user_id)
             Text(user.user_name)
+            
+            Button(action: {
+                logOut = true
+                tab = 2
+                defaults.set(nil, forKey: "user_id")
+            }) {
+                Text("ログアウト")
+                    .padding()
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
+            }
+            
+            
         }
         .onAppear{
             fetchUser(user_id: defaults.string(forKey: "user_id")!)

@@ -9,6 +9,7 @@ struct ContentView: View {
     @State private var isUserRegisterModalActive: Bool = false
     @State private var reload_timeline: Bool = false
     @State private var emotion: String = "0"
+    @State private var isLoggingIn: Bool = false
     
     let defaults = UserDefaults.standard
     let apiService = APIService()
@@ -17,7 +18,7 @@ struct ContentView: View {
         NavigationView {
             TabView(selection: $selectedTab) {
                 // ここに各タブのコンテンツを追加します
-                ProfileView()
+                ProfileView(tab: $selectedTab)
                     .tabItem {
                         Image(systemName: "person.fill")
                     }
@@ -68,19 +69,22 @@ struct ContentView: View {
             RegisterUserView(active: $isUserRegisterModalActive)
         })
         .onAppear{
-            isUserRegistered { isSuccess in
-                if isSuccess {
-                    if defaults.object(forKey: "user_id") != nil {
-                        isUserRegisterModalActive = false
-                        getEmotion(user_id: defaults.string(forKey: "user_id")!)
-                    } else {
-                        isUserRegisterModalActive = true
-                    }
-                } else {
-                    isUserRegisterModalActive = true
-                }
+            //  user defaultにuser idがなければ登録/ログインを促す
+            if defaults.object(forKey: "user_id") != nil {
+                isUserRegisterModalActive = false
+                getEmotion(user_id: defaults.string(forKey: "user_id")!)
+            } else {
+                isUserRegisterModalActive = true
             }
-            
+        }
+        .onChange(of: selectedTab){
+            //  user defaultにuser idがなければ登録/ログインを促す
+            if defaults.object(forKey: "user_id") != nil {
+                isUserRegisterModalActive = false
+                getEmotion(user_id: defaults.string(forKey: "user_id")!)
+            } else {
+                isUserRegisterModalActive = true
+            }
         }
     }
     
@@ -112,5 +116,4 @@ struct ContentView: View {
             }
         }
     }
-    
 }

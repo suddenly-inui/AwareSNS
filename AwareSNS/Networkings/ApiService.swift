@@ -88,8 +88,25 @@ class APIService {
         task.resume()
     }
     
-    func registerUser(user_id: String, user_name: String, completion: @escaping (Result<Success, Error>) -> Void) {
-        let url = URL(string: baseUrl + "/register_user?user_id=\(user_id)&user_name=\(user_name)")!
+    func SignIn(user_id: String, user_name: String, password: String, completion: @escaping (Result<Success, Error>) -> Void) {
+        let url = URL(string: baseUrl + "/sign_in?user_id=\(user_id)&user_name=\(user_name)&password=\(password)")!
+        let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
+            if let error = error {
+                completion(.failure(error))
+            } else if let data = data {
+                do {
+                    let decodedData = try JSONDecoder().decode(Success.self, from: data)
+                    completion(.success(decodedData))
+                } catch {
+                    completion(.failure(error))
+                }
+            }
+        }
+        task.resume()
+    }
+    
+    func LogIn(user_id: String, password: String, completion: @escaping (Result<Success, Error>) -> Void) {
+        let url = URL(string: baseUrl + "/log_in?user_id=\(user_id)&password=\(password)")!
         let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
             if let error = error {
                 completion(.failure(error))
@@ -148,6 +165,7 @@ struct Post: Codable {
     let content: String
     let emotion: String
     let timestamp: String
+    let reply_count: Int
 }
 
 struct Reply: Codable {

@@ -26,8 +26,14 @@ struct PostView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .multilineTextAlignment(.leading)
                 
+                HStack{
+                    Image(systemName: "message")
+                        .foregroundColor(.gray)
+                    Text("\(post.reply_count)")
+                        .foregroundColor(.gray)
+                }
+                .padding(.top, 5)
             }
-            .padding()
             .padding(.leading, 20)
             Divider()
         }
