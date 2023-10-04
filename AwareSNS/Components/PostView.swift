@@ -11,7 +11,7 @@ struct PostView: View {
                     HStack {
                         Text(post.user_name)
                             .fontWeight(.bold)
-                        Text(post.timestamp)
+                        Text(formatDateString(inputString: post.timestamp))
                             .foregroundColor(.gray)
                         Text("\(post.emotion)")
                             .foregroundColor(.gray)
@@ -39,8 +39,18 @@ struct PostView: View {
         }
         .buttonStyle(PlainButtonStyle())
         .foregroundColor(Color.primary)
-        .onAppear{
-            
+    }
+    
+    func formatDateString(inputString: String) -> String {
+        let inputFormatter = DateFormatter()
+        inputFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        if let date = inputFormatter.date(from: inputString) {
+            let outputFormatter = DateFormatter()
+            outputFormatter.dateFormat = "yyyy/MM/dd HH:mm"
+            let outputString = outputFormatter.string(from: date)
+            return outputString
+        } else {
+            return "" // パースに失敗した場合はnilを返すか、エラーを処理する方法を選んでください
         }
     }
 }
